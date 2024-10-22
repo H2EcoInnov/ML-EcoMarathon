@@ -62,7 +62,7 @@ def plot_result(value_hist: dict, total_episodes) -> None:
     plt.xlabel('Episodes (log scale)', fontdict=fontdict)
     plt.ylabel('Rewards', fontdict=fontdict)    
     plt.legend()
-    plt.savefig(f'Documents/DEV/H2/ML_RL_Fay/{"_".join(title.lower().split())}.png')
+    plt.savefig(f'ML_RL_Fay/{"_".join(title.lower().split())}.png')
     plt.show()
 
 
@@ -161,7 +161,7 @@ def simulate_optimal_episode(env, Q, render=False):
     return total_reward, trajectory
 
 if __name__ == "__main__":
-    train = False # Switch between train and evaluation
+    train = True # Switch between train and evaluation
     track_sel = 'a'
     total_episodes = 1000000
 
@@ -177,12 +177,12 @@ if __name__ == "__main__":
         Q_dict[key] = Q
         
         plot_result(reward_hist_dict, total_episodes)
-        with open(f'Documents/DEV/H2/ML_RL_Fay/track_{track_sel}.pkl', 'wb') as f:
+        with open(f'ML_RL_Fay/track_{track_sel}.pkl', 'wb') as f:
             pickle.dump(Q_dict, f)
             print("Q values saved")
 
     else:  # Evaluate the Q values and plot sample paths
-        with open(f'Documents/DEV/H2/ML_RL_Fay/track_{track_sel}.pkl', 'rb') as f:
+        with open(f'ML_RL_Fay/track_{track_sel}.pkl', 'rb') as f:
             Q_dict = pickle.load(f)
 
         key = list(Q_dict.keys())[0]
@@ -207,6 +207,6 @@ if __name__ == "__main__":
             ax.axis('off')
             ax.imshow(track_map, cmap='GnBu')
         plt.tight_layout()
-        plt.savefig(f'Documents/DEV/H2/ML_RL_Fay/track_{track_sel}_paths.png')
+        plt.savefig(f'ML_RL_Fay/track_{track_sel}_paths.png')
         plt.show()
 

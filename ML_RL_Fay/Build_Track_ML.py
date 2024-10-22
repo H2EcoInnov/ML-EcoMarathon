@@ -72,14 +72,14 @@ def build_custom_track_from_points(x_points, y_points, grid_size, track_width, s
     
     # Enregistrer la matrice dans un fichier .npy si besoin
     if save_map:
-        with open('Documents/DEV/H2/ML_RL_Fay/track_map_with_width_m2.npy', 'wb') as f:
+        with open('ML_RL_Fay/track_a.npy', 'wb') as f:
             np.save(f, track)
     
     return track
 
 # Exemple d'utilisation
 # Charger les données du fichier Excel contenant les coordonnées (x, y)
-df = pd.read_excel('Documents/DEV/H2/Fay_Race_Track/Fay_de_Bretagne.xlsx')
+df = pd.read_excel('Fay_Race_Track/Fay_de_Bretagne.xlsx')
 
 # Assigner les colonnes aux variables
 x_points = df['x (m)'].values

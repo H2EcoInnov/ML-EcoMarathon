@@ -19,8 +19,8 @@ class RaceTrack(Env):
         self.render_mode = render_mode
 
         # reading a track map
-        filename = 'track_map_with_width_m2.npy' if track_map == 'a' else 'track_b.npy'
-        with open('Documents/DEV/H2/ML_RL_Fay/' + filename, 'rb') as f:
+        filename = 'track_a.npy' if track_map == 'a' else 'track_b.npy'
+        with open('ML_RL_Fay/' + filename, 'rb') as f:
             self.track_map = np.load(f)
             print("Carte chargée")
 
