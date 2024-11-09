@@ -5,9 +5,11 @@ from tqdm import tqdm
 from scipy.ndimage import uniform_filter
 import logging
 from race_track_RL_env import RaceTrack
+import os 
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
+
 
 # Soft behavior policy
 def behavior_pi(state: tuple, nA: int, target_pi: np.ndarray, epsilon: float) -> tuple:
@@ -48,28 +50,35 @@ def plot_result(value_hist: dict, total_episodes) -> None:
     plt.xscale('log')
     plt.xticks([1, 10, 100, 1000, 10_000, 100_000, 1_000_000], 
                ['1', '10', '100', '1000', '10,000', '100,000', '1,000,000'])
+    
+    for key, value in value_hist.items():
+        # Assuming key is a string in the format "title,label"
+        print(key)
 
-    colors = ['tomato', 'cornflowerblue']
-    for i, (key, value) in enumerate(value_hist.items()):
-        title, label = key.split(',')
-        plt.plot(x, uniform_filter(value, size=20), 
-                 linewidth=line_width, 
-                 label=label,
-                 c=colors[i],
-                 alpha=0.95)
+        # Plotting the data with uniform filtering
+        plt.plot(
+            x, 
+            uniform_filter(value, size=20), 
+            linewidth=line_width, 
+            label=key,
+            c='tomato',
+            alpha=0.95
+        )
 
-    plt.title(title + ' training record', fontdict=fontdict)
+    plt.title(key + ' training record', fontdict=fontdict)
     plt.xlabel('Episodes (log scale)', fontdict=fontdict)
     plt.ylabel('Rewards', fontdict=fontdict)    
     plt.legend()
-    plt.savefig(f'ML_RL_Fay/{"_".join(title.lower().split())}.png')
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    save_path = os.path.join(script_dir, f'{"_".join(key.lower().split())}.png')
+    plt.savefig(save_path)
     plt.show()
 
 
 # Off-policy Monte Carlo importance sampling algorithm
 def off_policy_monte_carlo(total_episodes: int, track_map: str, render_mode: str) -> tuple:
     gamma = 0.9
-    epsilon = 0.1
+    epsilon = 0.2
     epsilon_decay = 0.99999
     min_epsilon = 0.01
 
@@ -163,7 +172,7 @@ def simulate_optimal_episode(env, Q, render=False):
 if __name__ == "__main__":
     train = True # Switch between train and evaluation
     track_sel = 'a'
-    total_episodes = 1000000
+    total_episodes = 10000
 
     if train:
         reward_hist_dict = dict()
@@ -177,12 +186,16 @@ if __name__ == "__main__":
         Q_dict[key] = Q
         
         plot_result(reward_hist_dict, total_episodes)
-        with open(f'ML_RL_Fay/track_{track_sel}.pkl', 'wb') as f:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path2 = os.path.join(script_dir, f'track_{track_sel}.pkl')
+        with open(file_path2, 'wb') as f:
             pickle.dump(Q_dict, f)
             print("Q values saved")
 
     else:  # Evaluate the Q values and plot sample paths
-        with open(f'ML_RL_Fay/track_{track_sel}.pkl', 'rb') as f:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path2 = os.path.join(script_dir, f'track_{track_sel}.pkl')
+        with open(file_path2, 'rb') as f:
             Q_dict = pickle.load(f)
 
         key = list(Q_dict.keys())[0]
@@ -207,6 +220,9 @@ if __name__ == "__main__":
             ax.axis('off')
             ax.imshow(track_map, cmap='GnBu')
         plt.tight_layout()
-        plt.savefig(f'ML_RL_Fay/track_{track_sel}_paths.png')
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        save_path = os.path.join(script_dir, f'track_{track_sel}_paths.png')
+        plt.savefig(save_path)
         plt.show()
 

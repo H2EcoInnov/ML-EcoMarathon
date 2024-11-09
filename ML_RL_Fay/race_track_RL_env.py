@@ -1,5 +1,8 @@
 import numpy as np
 from gymnasium import Env
+from pathlib import Path
+import os
+
 
 import pygame # pygame is used for rendering
 
@@ -19,8 +22,11 @@ class RaceTrack(Env):
         self.render_mode = render_mode
 
         # reading a track map
-        filename = 'track_a.npy' if track_map == 'a' else 'track_b.npy'
-        with open('ML_RL_Fay/' + filename, 'rb') as f:
+        
+        filename = '\\track_a.npy' if track_map == 'a' else '\\track_b.npy'
+
+
+        with open( os.path.dirname(os.path.abspath(__file__)) + filename , 'rb') as f:
             self.track_map = np.load(f)
             print("Carte chargée")
 
