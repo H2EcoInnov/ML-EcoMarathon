@@ -2,8 +2,6 @@ import numpy as np
 from gymnasium import Env
 from pathlib import Path
 import os
-
-
 import pygame # pygame is used for rendering
 
 STARTING = 2
@@ -14,6 +12,8 @@ class RaceTrack(Env):
 
     metadata = {'render_modes': ['human', 'rgb_array'], 'render_fps': 20}
 
+
+
     def __init__(self, track_map:str, render_mode:str=None, size:int=2):
         self.size = size # the size of cells
         
@@ -23,10 +23,10 @@ class RaceTrack(Env):
 
         # reading a track map
         
-        filename = '\\track_a.npy' if track_map == 'a' else '\\track_b.npy'
+        filename = 'track_a.npy' if track_map == 'a' else 'track_b.npy'
+        filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
 
-
-        with open( os.path.dirname(os.path.abspath(__file__)) + filename , 'rb') as f:
+        with open( filepath, 'rb') as f:
             self.track_map = np.load(f)
             print("Carte chargée")
 
@@ -37,6 +37,7 @@ class RaceTrack(Env):
         self.window = None # window for pygame rendering
         self.clock = None # clock for pygame ticks
         self.truncated = False
+
 
         # Get start states
         self.start_states = np.dstack(np.where(self.track_map==STARTING))[0]
@@ -160,7 +161,8 @@ class RaceTrack(Env):
 
         rows, cols = self.track_map.shape
         self.window.fill((255, 255, 255))
-        
+
+
         # Draw the map
         for row in range(rows):
             for col in range(cols):
@@ -174,15 +176,23 @@ class RaceTrack(Env):
                     fill = (61, 227, 144)            
                     pygame.draw.rect(self.window, fill, (col * self.size, row * self.size, self.size, self.size), 0)
 
-                color =(120, 120, 120)
+                color =(250, 250, 250)
                 # Draw gravels
-                if cell_val == 0:
-                    color = (255, 255, 255)
-                # Draw race track
-                elif cell_val == 1:
-                    color = (160, 160, 160)
+                if cell_val == 0.0:
+                    color = (0, 0, 0)
+
+                if cell_val > 10:
+                    # Normalize cell_val to a range between 0 and 1
+                    normalized_val = (cell_val - 60) / (85- 60)
+                    # Apply a stretching factor (e.g., 2x or more) to increase the contrast
+                    # Map to a blue-to-red gradient
+                    # Example: low elevation (blue), high elevation (red)
+                    blue = int(255 * (1 - normalized_val))  # More blue at lower elevations
+                    red = int(255 * normalized_val)         # More red at higher elevations
+                    color = (red, 0, blue)
+                    fill = (red, 0, blue)
                 
-                pygame.draw.rect(self.window, color, (col * self.size, row * self.size, self.size, self.size), 1)
+                    pygame.draw.rect(self.window, color, (col * self.size, row * self.size, self.size, self.size), 0)
         
         # Draw the car
         pygame.draw.rect(self.window, (86, 61, 227), (self.state[1] * self.size, self.state[0] * self.size, self.size, self.size), 0)

@@ -78,8 +78,7 @@ def build_custom_track_from_points(x_points, y_points, z_points, grid_size, trac
     return track
 
 
-# Exemple d'utilisation
-# Charger les données du fichier Excel contenant les coordonnées (x, y)
+# GENERATION DU CICUIT DE FAY
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(script_dir, '..', 'Fay_Race_Track', 'Fay_de_Bretagne.xlsx')

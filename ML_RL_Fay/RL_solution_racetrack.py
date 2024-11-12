@@ -1,11 +1,14 @@
 import numpy as np
 import pickle
+import matplotlib
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from scipy.ndimage import uniform_filter
 import logging
 from race_track_RL_env import RaceTrack
 import os 
+
+matplotlib.use('TkAgg')
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
@@ -170,7 +173,7 @@ def simulate_optimal_episode(env, Q, render=False):
     return total_reward, trajectory
 
 if __name__ == "__main__":
-    train = True # Switch between train and evaluation
+    train = False # Switch between train and evaluation
     track_sel = 'a'
     total_episodes = 10000
 
@@ -220,9 +223,10 @@ if __name__ == "__main__":
             ax.axis('off')
             ax.imshow(track_map, cmap='GnBu')
         plt.tight_layout()
-        script_dir = os.path.dirname(os.path.abspath(__file__))
 
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         save_path = os.path.join(script_dir, f'track_{track_sel}_paths.png')
+
         plt.savefig(save_path)
         plt.show()
 
